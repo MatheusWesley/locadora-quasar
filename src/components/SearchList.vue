@@ -1,5 +1,4 @@
 <template>
-  <q-page>
     <!-- Barra de Pesquisa -->
     <q-input
       v-model="searchTerm"
@@ -170,7 +169,6 @@
       </q-card>
     </q-dialog>
 
-  </q-page>
 </template>
 
 <script>
@@ -186,6 +184,7 @@ export default {
       default: 'Pesquisar'
     }
   },
+  emits: ['view-details', 'edit-item', 'delete-item'], // Declaração dos eventos
   data() {
     return {
       title: '',
@@ -221,6 +220,7 @@ export default {
   methods: {
     // Exibe os detalhes em um dialog
     viewDetails(item) {
+      this.$emit('view-details', item); // Emite o evento view-details
       this.selectedItem = item; // Armazena o item selecionado
       this.showDetailsDialog = true; // Mostra o dialog
     },
