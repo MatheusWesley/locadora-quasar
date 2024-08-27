@@ -1,6 +1,6 @@
 # locadora-quasar
 
-É um projeto bem básico de construído em cima de Vue e o framework Quasar, que tem o objetivo inicial de melhorar meus conhecimentos nessas duas ferramentas ja citadas.
+É um projeto bem básico construído em cima de Vue com o framework Quasar, que tem o objetivo inicial de melhorar meus conhecimentos nessas ferramentas.
 
 ## CheckList
 Aqui vou colocar o que preciso fazer e o que ja está feito.
