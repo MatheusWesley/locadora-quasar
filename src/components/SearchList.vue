@@ -236,6 +236,7 @@ export default {
       this.showDeleteDialog = true; // Exibe o dialog de exclusão
     },
     confirmDelete(id) {
+      const deletedItem = this.selectedItem;
       this.$emit('delete-item', id); // Emite evento de deleção
       this.showDeleteDialog = false; // Fecha o dialog de exclusão
 
@@ -243,9 +244,9 @@ export default {
       this.$q.notify({
         color: 'red-5',
         position: 'bottom-right',
-        message: 'Item deletado com sucesso!',
+        message: `Item "${deletedItem.title}" foi deletado com sucesso!`,
         icon: 'delete_forever',
-        timeout: 1000
+        timeout: 2000
       });
     },
     onSubmit() {

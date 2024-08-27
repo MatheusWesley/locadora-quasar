@@ -125,20 +125,19 @@ export default {
       
       // Fecha o dialog após o envio
       this.addNewItem = false;
-
-      // Limpa os campos do formulário
-      this.title = '';
-      this.subtitle = '';
-      this.description = '';
       
       // Exibe uma notificação (opcional, se quiser usar Quasar Notify)
       this.$q.notify({
         color: 'teal-9',
         position: 'bottom-right',
-        message: 'Item salvo com sucesso!',
+        message: `Item ${this.title} salvo com sucesso!`,
         icon: 'check',
         timeout: 2000
       });
+      // Limpa os campos do formulário
+      this.title = '';
+      this.subtitle = '';
+      this.description = '';
     }
   }
 };

@@ -79,11 +79,11 @@ export default {
       console.log('Editar livro:', item);
       // Lógica de edição pode ser implementada aqui
     },
-    deleteBook(id, item) {
+    deleteBook(id) {
       const index = this.books.findIndex(book => book.id === id);
       if (index !== -1) {
         this.books.splice(index, 1);
-        console.log(`Livro ${item} excluído.`);
+        console.log(`Livro ${id} excluído.`);
       }
     }
   }
