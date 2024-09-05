@@ -8,9 +8,13 @@ Aqui vou colocar o que preciso fazer e o que ja está feito.
 O que preciso fazer
 - [ ] Pagina de Dashboard 
 - [x] Pagina de Livros
-  - [x] Criar um card para apresentação da pagina
-    - [x] Este card deve conter um botão para Adicionar um novo livro
-      - [x] Este botão irá chamar um dialog
-- [ ] Pagina de Usuários
-- [ ] Pagina de Clientes
-- [ ] Pagina de Alugueis  
+- [x] Pagina de Usuários
+- [x] Pagina de Clientes
+- [x] Pagina de Alugueis  
+
+- [x] Viewers que ja implementei o LocalStorage
+  - [ ] Pagina de Dashboard 
+  - [x] Pagina de Livros
+  - [ ] Pagina de Usuários
+  - [ ] Pagina de Clientes
+  - [ ] Pagina de Alugueis 
