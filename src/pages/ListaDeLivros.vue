@@ -6,6 +6,7 @@
       :infoCard="card.info"
       :labelAction="card.labelBtn"
       :iconAction="card.iconBtn"
+      :onSubmit="addNewBook"
       class="q-mb-md"
     />
 
@@ -23,6 +24,7 @@
 <script>
 import SearchList from '../components/SearchList.vue';
 import CardPage from '@/components/CardPage.vue';
+import LocalStorageServices from '../services/localStorageServices'
 
 export default {
   components: {
@@ -37,56 +39,55 @@ export default {
         labelBtn: "Novo Livro",
         iconBtn: "bookmark_add",
       },
-      books: [
-        { 
-          id: 1, 
-          title: 'O Senhor dos Anéis',
-          subtitle: 'J.R.R. Tolkien',
-          description: 'A história narra o conflito contra o mal que se alastra pela Terra-média...'
-        },
-        { 
-          id: 2,
-          title: '1984',
-          subtitle: 'George Orwell',
-          description: 'A narrativa revela um futuro distópico em que o Estado é extremamente autoritário...'
-        },
-        { 
-          id: 3,
-          title: 'O Hobbit',
-          subtitle: 'J.R.R. Tolkien',
-          description: 'Bilbo Bolseiro é um hobbit que leva uma vida confortável e sem ambições...'
-        },
-        { 
-          id: 4,
-          title: 'Dom Casmurro',
-          subtitle: 'Machado de Assis',
-          description: 'Dom Casmurro conta a história de Bento Santiago (Bentinho), apelidado de Dom Casmurro...'
-        },
-        { 
-          id: 5,
-          title: 'Moby Dick',
-          subtitle: 'Herman Melville',
-          description: 'O livro traz o relato de um marinheiro letrado, Ishmael, sobre a última viagem de um navio...'
-        }
-      ]
+      books: [],
+      localStorageService: new LocalStorageServices('books')
     };
+  },
+  mounted() {
+    const storedBooks = JSON.parse(localStorage.getItem('books'));
+    if (storedBooks) {
+      this.books = storedBooks;
+      console.log(storedBooks);
+      
+    } else {
+      console.log('Sem nada');
+      
+    }
   },
   methods: {
     viewDetails(item) {
       console.log('Visualizar detalhes:', item);
     },
-    editBook(item) {
-      console.log('Editar livro:', item);
-      // Lógica de edição pode ser implementada aqui
+    addNewBook(item) {
+      const newBook = {
+        id: Date.now(),
+        title: item.title,
+        subtitle: item.subtitle,
+        description: item.description
+      };
+      const books = this.localStorageService.getFromStorage();
+      books.push(newBook);
+      this.books = books;
+      this.localStorageService.saveToStorage(books);
     },
-    deleteBook(id) {
-      const index = this.books.findIndex(book => book.id === id);
+    editBook(item) {
+      // console.log('Editar livro:', item);
+      let books = this.localStorageService.getFromStorage();
+      const index = books.findIndex(book => book.id === item.id);
       if (index !== -1) {
-        this.books.splice(index, 1);
-        console.log(`Livro ${id} excluído.`);
+        books[index] = item;
+        this.books = books;
+        this.localStorageService.saveToStorage(books);
       }
+    },
+    deleteBook(bookId) {
+      let books = this.localStorageService.getFromStorage();
+      books = books.filter(book => book.id !== bookId);
+      this.books = books;
+      this.localStorageService.saveToStorage(books);
     }
   }
+
 };
 </script>
 

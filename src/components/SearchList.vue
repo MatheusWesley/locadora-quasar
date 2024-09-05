@@ -201,13 +201,12 @@ export default {
     filteredItems() {
       const term = this.searchTerm.toLowerCase();
 
-      // Verifique se items é um array válido
+      // Verifica se items é um array válido
       if (!Array.isArray(this.items)) {
         return [];
       }
 
       return this.items.filter(item => {
-        // Garantir que title e subtitle não são null ou undefined
         const title = item.title ? item.title.toLowerCase() : '';
         const subtitle = item.subtitle ? item.subtitle.toLowerCase() : '';
 
@@ -216,6 +215,19 @@ export default {
       });
     }
 
+  },
+  watch: {
+    items: {
+      handler() {
+        // Reagir a alterações nos items
+        console.log('A lista de items foi alterada.');
+      },
+      deep: true // Observar alterações profundas (dentro do array)
+    },
+    searchTerm() {
+      // Reagir a alterações no termo de busca
+      console.log('O termo de busca foi alterado.');
+    }
   },
   methods: {
     // Exibe os detalhes em um dialog

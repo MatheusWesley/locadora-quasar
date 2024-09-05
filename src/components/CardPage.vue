@@ -32,7 +32,7 @@
     backdrop-filter="blur(20px) brightness(30%)"
   >
   <q-card class="bg-blue-grey-1 text-blue-grey-10" style="width: 500px">
-      <q-form @submit.prevent="onSubmit" class="q-pt-none">
+      <q-form @submit.prevent="submitForm" class="q-pt-none">
       <q-bar>
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
@@ -101,6 +101,10 @@ export default {
     iconAction: {
       type: String,
       default: 'add' // Valor padrão
+    },
+    onSubmit: {
+      type: Function,
+      required: true
     }
   },
   data() {
@@ -115,30 +119,30 @@ export default {
     openDialog() {
       this.addNewItem = true;
     },
-    onSubmit() {
-      // Exemplo de lógica: pode ser uma chamada a API para salvar o novo item
-      console.log({
+    submitForm() {
+      // Prepara os dados para submissão
+      const newItem = {
+        id: Date.now(),
         title: this.title,
         subtitle: this.subtitle,
-        description: this.description
-      });
-      
-      // Fecha o dialog após o envio
+        description: this.description || 'Sem Descrição'
+      };
+
+      // Chama a função passada via prop onSubmit
+      this.onSubmit(newItem);
+
+      // Fecha o dialog de edição
       this.addNewItem = false;
-      
-      // Exibe uma notificação (opcional, se quiser usar Quasar Notify)
+
+      // Exibe uma notificação de confirmação
       this.$q.notify({
         color: 'teal-9',
         position: 'bottom-right',
-        message: `Item ${this.title} salvo com sucesso!`,
-        icon: 'check',
-        timeout: 2000
+        message: 'Item editado com sucesso!',
+        icon: 'check_circle',
+        timeout: 1000
       });
-      // Limpa os campos do formulário
-      this.title = '';
-      this.subtitle = '';
-      this.description = '';
-    }
+    },
   }
 };
 </script>

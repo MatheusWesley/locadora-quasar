@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-blue-grey-10 header">
+    <q-header elevated reveal class="bg-blue-grey-10 header">
       <q-toolbar>
         <q-toolbar-title class="text-h4">{{ header }}</q-toolbar-title>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
