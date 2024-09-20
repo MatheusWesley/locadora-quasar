@@ -1,173 +1,118 @@
 <template>
-    <!-- Barra de Pesquisa -->
-    <q-input
-      v-model="searchTerm"
-      :label="label"
-      debounce="300"
-      class="q-mb-md"
-      standout="bg-blue-grey-7 text-white"
-    >
-      <template v-slot:prepend>
-        <q-icon name="search" />
-      </template>
-    </q-input>
+  <!-- Barra de Pesquisa -->
+  <q-input v-model="searchTerm" :label="label" debounce="300" class="q-mb-md" standout="bg-blue-grey-7 text-white">
+    <template v-slot:prepend>
+      <q-icon name="search" />
+    </template>
+  </q-input>
 
-    <!-- Lista de Itens -->
-    <q-list bordered separator>
-      <!-- Itera sobre os itens filtrados -->
-      <q-item
-        v-for="item in filteredItems"
-        :key="item.id"
-        clickable
-      >
-        <q-item-section>
-          <q-item-label>{{ item.title }}</q-item-label>
-          <q-item-label caption>{{ item.subtitle }}</q-item-label>
-        </q-item-section>
+  <!-- Lista de Itens -->
+  <q-list bordered separator>
+    <!-- Itera sobre os itens filtrados -->
+    <q-item v-for="item in filteredItems" :key="item.id" clickable>
+      <q-item-section>
+        <q-item-label>{{ item.title }}</q-item-label>
+        <q-item-label caption>{{ item.subtitle }}</q-item-label>
+      </q-item-section>
 
-        <q-item-section side>
-          <q-btn-group push>
-            <!-- Botão de Detalhes -->
-            <q-btn
-              flat
-              color="primary"
-              @click="viewDetails(item)"
-              icon="visibility"
-              padding="xs"
-              size="sm"
-            />
-            <!-- Botão de Edição -->
-            <q-btn
-              flat
-              color="orange"
-              @click="editItem(item)"
-              icon="edit"
-              padding="xs"
-              size="sm"
-            />
-            <!-- Botão de Exclusão -->
-            <q-btn
-              flat
-              color="red"
-              @click="deleteItem(item.id)"
-              icon="delete"
-              padding="xs"
-              size="sm"
-            />
-          </q-btn-group>
-        </q-item-section>
-      </q-item>
-    </q-list>
+      <q-item-section side>
+        <q-btn-group push>
+          <!-- Botão de Detalhes -->
+          <q-btn flat color="primary" @click="viewDetails(item)" icon="visibility" padding="xs" size="sm" />
+          <!-- Botão de Edição -->
+          <q-btn flat color="orange" @click="editItem(item)" icon="edit" padding="xs" size="sm" />
+          <!-- Botão de Exclusão -->
+          <q-btn flat color="red" @click="deleteItem(item.id)" icon="delete" padding="xs" size="sm" />
+        </q-btn-group>
+      </q-item-section>
+    </q-item>
+  </q-list>
 
-    <!-- DIALOGS -->
-    <!-- Dialog de detalhes. -->
-    <q-dialog v-model="showDetailsDialog" backdrop-filter="blur(20px) brightness(30%)">
-      <q-card class="my-card" style="width: 500px;">
-        <q-img src=".././assets/img/book-view.jpg" style="height: 150px;" />
+  <!-- DIALOGS -->
+  <!-- Dialog de detalhes. -->
+  <q-dialog v-model="showDetailsDialog" backdrop-filter="blur(20px) brightness(30%)">
+    <q-card class="my-card" style="width: 500px;">
+      <q-img src=".././assets/img/book-view.jpg" style="height: 150px;" />
 
-        <q-card-section>
-          <q-btn
-            fab
-            color="blue-grey-8"
-            icon="auto_stories"
-            class="absolute"
-            style="top: 0; right: 12px; transform: translateY(-50%);"
-          />
+      <q-card-section>
+        <q-btn fab color="blue-grey-8" icon="auto_stories" class="absolute"
+          style="top: 0; right: 12px; transform: translateY(-50%);" />
 
-          <div class="row no-wrap items-center">
-            <div class="col text-h6 ellipsis">
-              {{ selectedItem?.title }}
-              <div class="text-caption text-grey">
-                 {{ selectedItem?.subtitle }}
-              </div>
+        <div class="row no-wrap items-center">
+          <div class="col text-h6 ellipsis">
+            {{ selectedItem?.title }}
+            <div class="text-caption text-grey">
+              {{ selectedItem?.subtitle }}
             </div>
           </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <div class="text-subtitle2">
+          {{ selectedItem?.description }}
+        </div>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions align="right">
+        <q-btn v-close-popup color="blue-grey-10" label="Sair" icon="exit_to_app" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <!-- Dialog de edição -->
+  <q-dialog v-model="showEditDialog" persistent transition-show="scale" transition-hide="scale"
+    backdrop-filter="blur(20px) brightness(30%)">
+    <q-card class="bg-blue-grey-1 text-blue-grey-10" style="width: 500px">
+      <q-form @submit.prevent="onSubmit">
+        <q-card-section>
+          <div class="text-h6">Editar</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <div class="text-subtitle2">
-            {{ selectedItem?.description }}
-          </div>
+          <q-input filled v-model="title" :label="titleLabel" hint="Campo obrigatório" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Por favor digite uma informação valida.']" class="q-mb-md" />
+          <q-input filled v-model="subtitle" :label="subtitleLabel" hint="Campo obrigatório" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Por favor digite uma informação valida.']" class="q-mb-md" />
+          <q-input filled v-model="description" autogrow :label="descriptionLabel" hint="Campo Opcional"
+            class="q-mb-md" />
         </q-card-section>
 
-        <q-separator />
-
-        <q-card-actions align="right">
-          <q-btn v-close-popup color="blue-grey-10" label="Sair" icon="exit_to_app" />
+        <q-card-actions align="right" class="bg-blue-grey-2 text-blue-grey-1">
+          <q-btn outline color="secondary" label="Cancelar" v-close-popup />
+          <q-btn color="blue-10" type="submit" label="Salvar Alterações" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </q-form>
+    </q-card>
+  </q-dialog>
 
-    <!-- Dialog de edição -->
-    <q-dialog v-model="showEditDialog" persistent transition-show="scale" transition-hide="scale" backdrop-filter="blur(20px) brightness(30%)">
-      <q-card class="bg-blue-grey-1 text-blue-grey-10" style="width: 500px">
-        <q-form @submit.prevent="onSubmit">
-          <q-card-section>
-            <div class="text-h6">Editar</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input
-              filled
-              v-model="title"
-              label="Informe o titulo *"
-              hint="Campo obrigatório"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Por favor digite uma informação valida.']"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="subtitle"
-              label="Informe o subtitulo *"
-              hint="Campo obrigatório"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Por favor digite uma informação valida.']"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="description"
-              autogrow
-              label="Informe a descrição"
-              hint="Campo Opcional"
-              class="q-mb-md"
-            />
-          </q-card-section>
-
-          <q-card-actions align="right" class="bg-blue-grey-2 text-blue-grey-1">
-            <q-btn outline color="secondary" label="Cancelar" v-close-popup />
-            <q-btn color="blue-10" type="submit" label="Salvar Alterações" />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
-
-    <!-- Dialog de Exclusão -->
-    <q-dialog v-model="showDeleteDialog" persistent backdrop-filter="blur(20px) brightness(30%)">
-      <q-card class="bg-blue-grey-1 text-blue-grey-10" style="width: 500px">
-        <q-card-section class="row items-center">
-          <div class="row no-wrap items-center">
-            <div class="col text-h6 ellipsis">
-              <div class="q-mb-md">
-                Deletar
-              </div>
-              <div class="text-body1 text-grey-10">
-                 {{ selectedItem?.title }}
-              </div>
-              <div class="text-caption text-grey">
-                 {{ selectedItem?.subtitle }}
-              </div>
+  <!-- Dialog de Exclusão -->
+  <q-dialog v-model="showDeleteDialog" persistent backdrop-filter="blur(20px) brightness(30%)">
+    <q-card class="bg-blue-grey-1 text-blue-grey-10" style="width: 500px">
+      <q-card-section class="row items-center">
+        <div class="row no-wrap items-center">
+          <div class="col text-h6 ellipsis">
+            <div class="q-mb-md">
+              Deletar
+            </div>
+            <div class="text-body1 text-grey-10">
+              {{ selectedItem?.title }}
+            </div>
+            <div class="text-caption text-grey">
+              {{ selectedItem?.subtitle }}
             </div>
           </div>
-        </q-card-section>
+        </div>
+      </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn outline label="Cancelar" color="secondary" v-close-popup />
-          <q-btn label="Deletar" icon="delete" color="negative" @click="confirmDelete(selectedItem.id)" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+      <q-card-actions align="right">
+        <q-btn outline label="Cancelar" color="secondary" v-close-popup />
+        <q-btn label="Deletar" icon="delete" color="negative" @click="confirmDelete(selectedItem.id)" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 
 </template>
 
@@ -182,6 +127,18 @@ export default {
     label: {
       type: String,
       default: 'Pesquisar'
+    },
+    titleLabel: {
+      type: String,
+      default: 'Informe um titulo'
+    },
+    subtitleLabel: {
+      type: String,
+      default: 'Informe um subtitulo'
+    },
+    descriptionLabel: {
+      type: String,
+      default: 'Informe a descrição'
     }
   },
   emits: ['view-details', 'edit-item', 'delete-item'], // Declaração dos eventos

@@ -25,6 +25,11 @@ export default {
   },
   data() {
     return {
+      newBook: {
+        title: 'titulo',
+        subtitle: '',
+        description: ''
+      },
       card: {
         title: "Listagem de Livros",
         info: "Seja bem-vindo à página de livros",
@@ -49,8 +54,8 @@ export default {
       console.log("Visualizar detalhes:", item);
     },
     addNewBook(item) {
-      console.log('Novo livro:', item);
       const newBook = {
+        id: Date.now(),
         title: item.title,
         subtitle: item.subtitle,
         description: item.description,
@@ -60,10 +65,8 @@ export default {
       this.books = books;
       this.localStorageService.saveToStorage(books);
     },
-
-
     editBook(item) {
-      //console.log('Editar livro:', item);
+      // console.log('Editar livro:', item);
       const books = this.localStorageService.getFromStorage();
       const index = books.findIndex((book) => book.id === item.id);
       if (index !== -1) {
